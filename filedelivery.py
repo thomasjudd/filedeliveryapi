@@ -43,7 +43,7 @@ def links():
 
 @app.route('/path/<host_a>/to/<host_b>', methods=['GET'])
 def find_cheapest_path(host_a, host_b):
-  return jsonify(nx.shortest_path(graph, host_a, host_b)[host_a])
+  return jsonify(nx.shortest_path(graph, host_a, host_b))
 
 if __name__ == '__main__':
   app.run(debug=True)
