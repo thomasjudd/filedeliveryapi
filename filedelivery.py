@@ -71,22 +71,19 @@ def find_cheapest_path(host_a, host_b):
   end_node = graph[host_b]
   EDGE_COST = 1
 
-  tmp = []
-  path = []
+  count = 0
   for i in range(len(graph)):
-    path.append(curr_node)
     unvisited_neighbors = []
     for node in curr_node['neighbor_keys']:
       if not graph[node]['visited']:
         unvisited_neighbors.append(graph[node])     
         if graph[node]['cost'] > (curr_node['cost'] + EDGE_COST):
           graph[node]['cost'] = curr_node['cost'] + EDGE_COST
-
     curr_node['visited'] = True
-    tmp.append(unvisited_neighbors)
     curr_node = unvisited_neighbors[0].copy()
 
-  return jsonify(path)
+  return jsonify(end_node)
+
 
 
 
