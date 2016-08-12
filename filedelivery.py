@@ -5,12 +5,13 @@ import math
 import random
 import string
 
+
 app = Flask(__name__)
 
 graph = {}
 
 def generate_nodes():
-  num_links = 100
+  num_links = 48
   alphabet = list(string.ascii_lowercase)
   for letter in alphabet:
      graph[letter] = {
@@ -65,27 +66,29 @@ def links():
 @app.route('/path/<host_a>/to/<host_b>', methods=['GET'])
 def find_cheapest_path(host_a, host_b):
   start_node = graph[host_a]
-  end_node = graph[host_b]
   start_node['cost'] = 0
-  EDGE_COST = 1
-  visited = []
   curr_node = start_node
+  end_node = graph[host_b]
+  EDGE_COST = 1
 
-#  while len(visted) < len(nodes):
-  min_node = {'cost': 99999999 }
-  mytmp = []
-  curr_node['visited'] = True
-  for node in curr_node['neighbor_keys']:
-    if graph[node]['cost'] > (curr_node['cost'] + EDGE_COST) and not graph[node]['visited']:
-      graph[node]['cost'] = curr_node['cost'] + EDGE_COST
-      if min_node['cost'] > graph[node]['cost']:
-        min_node = graph[node] 
-        mytmp.append(graph[node])
+  tmp = []
+  path = []
+  for i in range(len(graph)):
+    path.append(curr_node)
+    unvisited_neighbors = []
+    for node in curr_node['neighbor_keys']:
+      if not graph[node]['visited']:
+        unvisited_neighbors.append(graph[node])     
+        if graph[node]['cost'] > (curr_node['cost'] + EDGE_COST):
+          graph[node]['cost'] = curr_node['cost'] + EDGE_COST
 
-#  curr_node = min_node
+    curr_node['visited'] = True
+    tmp.append(unvisited_neighbors)
+    curr_node = unvisited_neighbors[0].copy()
 
-  return jsonify(mytmp)
-  #return jsonify(graph)
+  return jsonify(path)
+
+
 
 if __name__ == '__main__':
   app.run(debug=True)
